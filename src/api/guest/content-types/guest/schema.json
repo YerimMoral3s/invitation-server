@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "guests",
+  "info": {
+    "singularName": "guest",
+    "pluralName": "guests",
+    "displayName": "guest"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "phone_number": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    }
+  }
+}
