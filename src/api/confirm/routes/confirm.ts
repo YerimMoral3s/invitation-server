@@ -9,5 +9,14 @@ export default {
        middlewares: [],
      },
     },
+    {
+      method: 'POST',
+      path: '/confirmAssistance',
+      handler: 'confirm.confirmAssistance',
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    }
   ],
 };

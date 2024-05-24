@@ -4,7 +4,8 @@
   "info": {
     "singularName": "guest",
     "pluralName": "guests",
-    "displayName": "guest"
+    "displayName": "guest",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -16,6 +17,10 @@
     },
     "name": {
       "type": "string"
+    },
+    "confirmation": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
