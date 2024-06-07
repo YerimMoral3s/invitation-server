@@ -377,6 +377,11 @@ export interface ApiGuestGuest extends Schema.CollectionType {
     phone_number: Attribute.String;
     name: Attribute.String;
     confirmation: Attribute.Boolean & Attribute.DefaultTo<false>;
+    sub_guests: Attribute.Relation<
+      'api::guest.guest',
+      'oneToMany',
+      'api::sub-guest.sub-guest'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -388,6 +393,38 @@ export interface ApiGuestGuest extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::guest.guest',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiSubGuestSubGuest extends Schema.CollectionType {
+  collectionName: 'sub_guests';
+  info: {
+    singularName: 'sub-guest';
+    pluralName: 'sub-guests';
+    displayName: 'SubGuest';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Name: Attribute.String;
+    Confirmation: Attribute.Boolean & Attribute.DefaultTo<false>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::sub-guest.sub-guest',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::sub-guest.sub-guest',
       'oneToOne',
       'admin::user'
     > &
@@ -832,6 +869,7 @@ declare module '@strapi/types' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'api::guest.guest': ApiGuestGuest;
+      'api::sub-guest.sub-guest': ApiSubGuestSubGuest;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;

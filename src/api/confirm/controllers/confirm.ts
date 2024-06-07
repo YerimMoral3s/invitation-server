@@ -61,9 +61,28 @@ export default {
   // this should confirm the assistance of the user
   confirmAssistance:async (ctx, next) => {
     try {
-      const body: { id: number, confirmation: boolean } = ctx.request.body;
+      const body: {
+        id: number;
+        confirmation: boolean;
+        sub_guests: { id: number; confirmation: boolean }[];
+      } = ctx.request.body;
 
-      if (typeof body.id !== 'number' || typeof body.confirmation !== 'boolean') {
+      const validateBody = (body: any): boolean => {
+        if (typeof body.id !== 'number' || typeof body.confirmation !== 'boolean') {
+          return false;
+        }
+        if (!Array.isArray(body.sub_guests)) {
+          return false;
+        }
+        for (const sub_guest of body.sub_guests) {
+          if (typeof sub_guest.id !== 'number' || typeof sub_guest.confirmation !== 'boolean') {
+            return false;
+          }
+        }
+        return true;
+      };
+
+      if (!validateBody(body)) {
         ctx.status = 400;
         ctx.body = {
           error: {
@@ -72,15 +91,17 @@ export default {
             details: [
               {
                 field: "body",
-                issue: "error in the body of the request."
+                issue: "Error in the body of the request."
               }
             ]
           }
-          };
+        };
         return;
       }
 
-      const user = await strapi.entityService.findOne("api::guest.guest", body.id) as unknown as ApiGuestGuest["attributes"];
+      const user = await strapi.entityService.findOne("api::guest.guest", body.id, {
+        populate: { sub_guests: true }
+      }) as unknown as ApiGuestGuest["attributes"];
 
       if (!user) {
         ctx.status = 404;
@@ -100,18 +121,23 @@ export default {
       }
 
       await strapi.entityService.update("api::guest.guest", body.id, {
-        data: {
-          confirmation: body.confirmation
-        }
+        data: { confirmation: body.confirmation }
       });
 
-      ctx.status = 200;
-      ctx.body = {
-        data: {
-          ...user,
-          confirmation: body.confirmation
+      if (body.sub_guests && body.sub_guests.length > 0) {
+        for (const sub_guest of body.sub_guests) {
+          await strapi.entityService.update("api::sub-guest.sub-guest", sub_guest.id, {
+            data: { Confirmation: sub_guest.confirmation }
+          });
         }
-      };
+      }
+
+      const newUser = await strapi.entityService.findOne("api::guest.guest", body.id, {
+        populate: { sub_guests: true }
+      }) as unknown as ApiGuestGuest["attributes"];
+
+      ctx.status = 200;
+      ctx.body = { data: newUser };
     } catch (error) {
       ctx.status = 500;
       ctx.body = {

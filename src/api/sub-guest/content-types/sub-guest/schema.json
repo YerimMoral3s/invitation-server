@@ -1,0 +1,23 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sub_guests",
+  "info": {
+    "singularName": "sub-guest",
+    "pluralName": "sub-guests",
+    "displayName": "SubGuest",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Name": {
+      "type": "string"
+    },
+    "Confirmation": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

@@ -21,6 +21,11 @@
     "confirmation": {
       "type": "boolean",
       "default": false
+    },
+    "sub_guests": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::sub-guest.sub-guest"
     }
   }
 }
