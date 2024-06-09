@@ -75,7 +75,7 @@ export default {
           return false;
         }
         for (const sub_guest of body.sub_guests) {
-          if (typeof sub_guest.id !== 'number' || typeof sub_guest.confirmation !== 'boolean') {
+          if (typeof sub_guest.id !== 'number' || typeof sub_guest.Confirmation !== 'boolean') {
             return false;
           }
         }
