@@ -64,7 +64,7 @@ export default {
       const body: {
         id: number;
         confirmation: boolean;
-        sub_guests: { id: number; confirmation: boolean }[];
+        sub_guests: { id: number; Confirmation: boolean }[];
       } = ctx.request.body;
 
       const validateBody = (body: any): boolean => {
@@ -127,7 +127,7 @@ export default {
       if (body.sub_guests && body.sub_guests.length > 0) {
         for (const sub_guest of body.sub_guests) {
           await strapi.entityService.update("api::sub-guest.sub-guest", sub_guest.id, {
-            data: { Confirmation: sub_guest.confirmation }
+            data: { Confirmation: sub_guest.Confirmation }
           });
         }
       }
