@@ -413,7 +413,7 @@ export interface ApiSubGuestSubGuest extends Schema.CollectionType {
   };
   attributes: {
     Name: Attribute.String;
-    Confirmation: Attribute.Boolean & Attribute.DefaultTo<false>;
+    confirmation: Attribute.Boolean & Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

@@ -15,7 +15,7 @@
     "Name": {
       "type": "string"
     },
-    "Confirmation": {
+    "confirmation": {
       "type": "boolean",
       "default": false
     }
