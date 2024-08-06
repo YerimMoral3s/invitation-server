@@ -400,6 +400,42 @@ export interface ApiGuestGuest extends Schema.CollectionType {
   };
 }
 
+export interface ApiPlacePlace extends Schema.CollectionType {
+  collectionName: 'places';
+  info: {
+    singularName: 'place';
+    pluralName: 'places';
+    displayName: 'Place';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    image: Attribute.Media;
+    name: Attribute.String;
+    address: Attribute.String;
+    phone: Attribute.String;
+    email: Attribute.String;
+    website: Attribute.String;
+    airbnb: Attribute.String;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::place.place',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::place.place',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiSubGuestSubGuest extends Schema.CollectionType {
   collectionName: 'sub_guests';
   info: {
@@ -869,6 +905,7 @@ declare module '@strapi/types' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'api::guest.guest': ApiGuestGuest;
+      'api::place.place': ApiPlacePlace;
       'api::sub-guest.sub-guest': ApiSubGuestSubGuest;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
