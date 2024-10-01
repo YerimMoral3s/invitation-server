@@ -18,7 +18,7 @@
     "name": {
       "type": "string"
     },
-    "confirmation": {
+    "civil_confirmation": {
       "type": "boolean",
       "default": false
     },
@@ -26,6 +26,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::sub-guest.sub-guest"
+    },
+    "seen": {
+      "type": "datetime"
+    },
+    "religious_confirmation": {
+      "type": "boolean"
     }
   }
 }

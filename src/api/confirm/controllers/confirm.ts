@@ -4,19 +4,12 @@
 
 import { ApiGuestGuest } from "../../../../types/generated/contentTypes";
 
-
-
-
 export default {
   // this should send a message to all the guests with the invitation
   sendInvitation: async (ctx, next) => {
     // try {
-
     //   const guests = await strapi.entityService.findMany("api::guest.guest") as unknown as ApiGuestGuest["attributes"][];
-
-
     //   const client = require('twilio')(accountSid, authToken);
-
     //   client.messages
     //   .create({
     //     body: 'https://yerimmoral3s.github.io/Inivitacion/',
@@ -24,65 +17,32 @@ export default {
     //     to: 'whatsapp:+5215530589089'
     //   })
     //   .then(message => console.log(message.sid))
-
-
-
-
-
     //  // guests.forEach(async (guest) => {
     //  //   console.log(guest.name);
-
-
     //  //   guest.phone_number = guest.phone_number.replace(/\D/g, '');
-
     //  //   console.log(guest.phone_number);
-
     //  //   console.log({
     //  //     from: `${number}`,
     //  //     body: 'Me la pelas',
     //  //     to: `+52${guest.phone_number}`
     //  //   });
-
-
-
     //  //   });
-
-
-
     // } catch (err) {
     //   ctx.body = err;
     // }
-
   },
   // this should send an OTP to the user
-  sendOTP:async (ctx, next) => {},
+  sendOTP: async (ctx, next) => {},
   // this should verify the OTP
-  verifyOTP:async (ctx, next) => {},
+  verifyOTP: async (ctx, next) => {},
   // this should confirm the assistance of the user
-  confirmAssistance:async (ctx, next) => {
+  confirmAssistance: async (ctx, next) => {
     try {
-      const body: {
-        id: number;
-        confirmation: boolean;
-        sub_guests: { id: number; confirmation: boolean }[];
-      } = ctx.request.body;
+      // Obtener y validar el cuerpo de la solicitud
+      const { id, sub_guests } = ctx.request.body;
 
-      const validateBody = (body: any): boolean => {
-        if (typeof body.id !== 'number' || typeof body.confirmation !== 'boolean') {
-          return false;
-        }
-        if (!Array.isArray(body.sub_guests)) {
-          return false;
-        }
-        for (const sub_guest of body.sub_guests) {
-          if (typeof sub_guest.id !== 'number' || typeof sub_guest.confirmation !== 'boolean') {
-            return false;
-          }
-        }
-        return true;
-      };
-
-      if (!validateBody(body)) {
+      // Validación básica del cuerpo de la solicitud (puedes descomentar las validaciones si lo necesitas)
+      if (typeof id !== "number" || !Array.isArray(sub_guests)) {
         ctx.status = 400;
         ctx.body = {
           error: {
@@ -91,17 +51,18 @@ export default {
             details: [
               {
                 field: "body",
-                issue: "Error in the body of the request."
-              }
-            ]
-          }
+                issue: "Invalid request body.",
+              },
+            ],
+          },
         };
         return;
       }
 
-      const user = await strapi.entityService.findOne("api::guest.guest", body.id, {
-        populate: { sub_guests: true }
-      }) as unknown as ApiGuestGuest["attributes"];
+      // Verificar que el `guest` existe
+      const user = await strapi.entityService.findOne("api::guest.guest", id, {
+        populate: { sub_guests: true },
+      });
 
       if (!user) {
         ctx.status = 404;
@@ -112,47 +73,71 @@ export default {
             details: [
               {
                 field: "id",
-                issue: "The specified ID does not exist."
-              }
-            ]
-          }
+                issue: "The specified ID does not exist.",
+              },
+            ],
+          },
         };
         return;
       }
 
-      await strapi.entityService.update("api::guest.guest", body.id, {
-        data: { confirmation: body.confirmation }
-      });
-
-      if (body.sub_guests && body.sub_guests.length > 0) {
-        for (const sub_guest of body.sub_guests) {
-          await strapi.entityService.update("api::sub-guest.sub-guest", sub_guest.id, {
-            data: { confirmation: sub_guest.confirmation }
-          });
+      // Actualizar el estado de confirmación del `guest` y sus `sub_guests`
+      if (sub_guests.length > 0) {
+        for (const sub_guest of sub_guests) {
+          await strapi.entityService.update(
+            "api::sub-guest.sub-guest",
+            sub_guest.id,
+            {
+              data: { confirmation: sub_guest.confirmation },
+            }
+          );
         }
       }
 
-      const newUser = await strapi.entityService.findOne("api::guest.guest", body.id, {
-        populate: { sub_guests: true }
-      }) as unknown as ApiGuestGuest["attributes"];
+      // Obtener el `guest` actualizado con sus `sub_guests`
+      const usr = await strapi.entityService.findOne("api::guest.guest", id, {
+        populate: { sub_guests: true },
+      });
 
+      const updatedGuests = usr.sub_guests.map((sg) => {
+        const id = sg.id;
+        delete sg.id;
+        return {
+          id: id,
+          attributes: {
+            ...sg,
+          },
+        };
+      });
+
+      delete usr.id;
+
+      const updatedUser = {
+        id: user.id,
+        attributes: {
+          ...usr,
+          sub_guests: {
+            data: updatedGuests,
+          },
+        },
+      };
+
+      // Responder con el usuario actualizado
       ctx.status = 200;
-      ctx.body = { data: newUser };
+      ctx.body = { data: updatedUser };
     } catch (error) {
       ctx.status = 500;
       ctx.body = {
         error: {
           code: 500,
-          message: "Internal server error",
+          message: "Internal Server Error",
           details: [
             {
-              field: "error",
-              issue: "An error occurred while trying to update the user.",
-              error: error.message
-            }
-          ]
-        }
+              issue: error.message,
+            },
+          ],
+        },
       };
     }
-  }
+  },
 };

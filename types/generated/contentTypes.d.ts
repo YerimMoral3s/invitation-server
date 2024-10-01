@@ -376,12 +376,14 @@ export interface ApiGuestGuest extends Schema.CollectionType {
   attributes: {
     phone_number: Attribute.String;
     name: Attribute.String;
-    confirmation: Attribute.Boolean & Attribute.DefaultTo<false>;
+    civil_confirmation: Attribute.Boolean & Attribute.DefaultTo<false>;
     sub_guests: Attribute.Relation<
       'api::guest.guest',
       'oneToMany',
       'api::sub-guest.sub-guest'
     >;
+    seen: Attribute.DateTime;
+    religious_confirmation: Attribute.Boolean;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -393,42 +395,6 @@ export interface ApiGuestGuest extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::guest.guest',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiPlacePlace extends Schema.CollectionType {
-  collectionName: 'places';
-  info: {
-    singularName: 'place';
-    pluralName: 'places';
-    displayName: 'Place';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    image: Attribute.Media;
-    name: Attribute.String;
-    address: Attribute.String;
-    phone: Attribute.String;
-    email: Attribute.String;
-    website: Attribute.String;
-    airbnb: Attribute.String;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::place.place',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::place.place',
       'oneToOne',
       'admin::user'
     > &
@@ -448,7 +414,7 @@ export interface ApiSubGuestSubGuest extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    Name: Attribute.String;
+    name: Attribute.String;
     confirmation: Attribute.Boolean & Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -905,7 +871,6 @@ declare module '@strapi/types' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'api::guest.guest': ApiGuestGuest;
-      'api::place.place': ApiPlacePlace;
       'api::sub-guest.sub-guest': ApiSubGuestSubGuest;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
