@@ -376,7 +376,7 @@ export interface ApiGuestGuest extends Schema.CollectionType {
   attributes: {
     phone_number: Attribute.String;
     name: Attribute.String;
-    civil_confirmation: Attribute.Boolean & Attribute.DefaultTo<false>;
+    civil_confirmation: Attribute.Boolean;
     sub_guests: Attribute.Relation<
       'api::guest.guest',
       'oneToMany',
@@ -384,6 +384,7 @@ export interface ApiGuestGuest extends Schema.CollectionType {
     >;
     seen: Attribute.DateTime;
     religious_confirmation: Attribute.Boolean;
+    invitation_sent: Attribute.Boolean & Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

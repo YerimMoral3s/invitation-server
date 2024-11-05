@@ -19,8 +19,7 @@
       "type": "string"
     },
     "civil_confirmation": {
-      "type": "boolean",
-      "default": false
+      "type": "boolean"
     },
     "sub_guests": {
       "type": "relation",
@@ -32,6 +31,10 @@
     },
     "religious_confirmation": {
       "type": "boolean"
+    },
+    "invitation_sent": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
