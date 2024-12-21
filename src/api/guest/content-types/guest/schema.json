@@ -35,6 +35,9 @@
     "invitation_sent": {
       "type": "boolean",
       "default": false
+    },
+    "blocked": {
+      "type": "boolean"
     }
   }
 }

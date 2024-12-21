@@ -24,6 +24,7 @@ export default factories.createCoreController(
             civil_confirmation: guest.civil_confirmation,
             religious_confirmation: guest.religious_confirmation,
             seen: guest.seen,
+            blocked: guest.blocked,
             sub_guests: {
               data: guest.sub_guests.map((subGuest) => ({
                 id: subGuest.id,

@@ -385,6 +385,7 @@ export interface ApiGuestGuest extends Schema.CollectionType {
     seen: Attribute.DateTime;
     religious_confirmation: Attribute.Boolean;
     invitation_sent: Attribute.Boolean & Attribute.DefaultTo<false>;
+    blocked: Attribute.Boolean;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
